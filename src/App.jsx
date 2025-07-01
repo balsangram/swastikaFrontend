@@ -1,35 +1,44 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { Suspense } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-function App() {
-  const [count, setCount] = useState(0)
+import BlankLayout from '../src/components/Layouts/BlankLayout';
+import DefaultLayout from '../src/components/Layouts/DefaultLayout';
+// import Home from './page/Home';
+import Timer from './page//timer/Timer';
+import TodoList from './page/todo/TodoList';
+import Note from './page/note/Note';
+import Profile from './page/profile/Profile';
+import Notification from './page/notification/Notification';
+import GraphHome from './page/graph/GraphHome';
 
+// Lazy imports (same as your route file)
+const Home = React.lazy(() => import('./page/Home'));
+
+const App = () => {
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <Suspense fallback={<div>Loading...</div>}>
+      <BrowserRouter>
+        <Routes>
+          {/* Default Layout Routes */}
+          <Route element={<DefaultLayout />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/timer" element={<Timer />} />
+            <Route path="/todoList" element={<TodoList />} />
+            <Route path="/note" element={<Note />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/notification" element={<Notification />} />
+            <Route path="/graphHome" element={<GraphHome />} />
+          </Route>
 
-export default App
+          {/* Blank Layout Routes */}
+          <Route element={<BlankLayout />}>
+            {/* <Route path="/signin" element={<SignIn />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} /> */}
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </Suspense>
+  );
+};
+
+export default App;
