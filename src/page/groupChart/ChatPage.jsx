@@ -72,7 +72,7 @@ function ChatPage() {
       )}
 
       {/* Send message input */}
-      <div className="bg-red-500 h-[10vh]">
+      <div className=" h-[10vh]">
         <SendMessage onSend={handleSend} />
       </div>
     </div>
@@ -82,7 +82,7 @@ function ChatPage() {
 const styles = {
   chatApp: {
     maxWidth: '500px',
-    height: '88vh',
+    height: '80vh',
     border: '1px solid #ccc',
     borderRadius: '12px',
     display: 'flex',
