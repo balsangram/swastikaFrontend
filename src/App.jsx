@@ -10,6 +10,8 @@ import Note from './page/note/Note';
 import Profile from './page/profile/Profile';
 import Notification from './page/notification/Notification';
 import GraphHome from './page/graph/GraphHome';
+import FriendIds from './page/message/FriendIds';
+import ChatPage from './page/groupChart/ChatPage';
 
 // Lazy imports (same as your route file)
 const Home = React.lazy(() => import('./page/Home'));
@@ -28,6 +30,8 @@ const App = () => {
             <Route path="/profile" element={<Profile />} />
             <Route path="/notification" element={<Notification />} />
             <Route path="/graphHome" element={<GraphHome />} />
+            <Route path="/chatPage" element={<ChatPage />} />
+            <Route path="/friendIds" element={<FriendIds />} />
           </Route>
 
           {/* Blank Layout Routes */}

@@ -17,7 +17,7 @@ import GroupsIcon from '@mui/icons-material/Groups';
 function Home() {
   const Navigate  = useNavigate();
   return (
-    <div className=' min-h-[90vh] bg-pink-300 flex justify-center items-center'>
+    <div className=' min-h-[80vh] bg-pink-300 flex justify-center items-center'>
 
     <div className='grid grid-cols-2 gap-4 '>
      <Button className='h-[4rem] w-[5rem]' variant="contained"
@@ -40,8 +40,16 @@ function Home() {
       Navigate("/graphHome")
      }}
      ><IncompleteCircleIcon /></Button>
-     <Button className='h-[4rem] w-[5rem]' variant="contained"><MessageIcon /></Button>
-     <Button className='h-[4rem] w-[5rem]' variant="contained"><GroupsIcon /></Button>
+     <Button className='h-[4rem] w-[5rem]' variant="contained"
+        onClick={() =>{
+      Navigate("/friendIds")
+     }}
+     ><MessageIcon /></Button>
+     <Button className='h-[4rem] w-[5rem]' variant="contained"
+       onClick={() =>{
+      Navigate("/chatPage")
+     }}
+     ><GroupsIcon /></Button>
      <Button className='h-[4rem] w-[5rem]' variant="contained"><SunnyIcon /></Button>
      <Button className='h-[4rem] w-[5rem]' variant="contained"><NightlightRoundIcon /></Button>
      <Button className='h-[4rem] w-[5rem]' variant="contained"><RamenDiningIcon /></Button>
