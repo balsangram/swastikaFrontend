@@ -1,34 +1,54 @@
 import React, { useEffect, useRef, useState } from 'react';
+import io from 'socket.io-client';
 import SendMessage from '../../components/message/SendMessage';
 import LeftMessage from '../../components/message/LeftMessage';
 import RightMessage from '../../components/message/RightMessage';
 import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
 
-function ChatPage() {
-  const [messages, setMessages] = useState([
-    { text: 'Hey, are we still on for the meeting?', type: 'received', sender: 'Anjali', time: '10:30 AM' },
-    { text: 'Yes, I’ll join in 5 minutes.', type: 'sent', time: '10:31 AM' },
+const socket = io(import.meta.env.VITE_BACKEND_URL);
 
-  ]);
-
+export default function ChatPage() {
+  const [messages, setMessages] = useState([]);
+  const [showScrollToBottom, setShowScrollToBottom] = useState(false);
   const messagesEndRef = useRef(null);
   const messageContainerRef = useRef(null);
-  const [showScrollToBottom, setShowScrollToBottom] = useState(false);
 
-  // Scroll to bottom when messages change
+  // Auto scroll to bottom
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
-  const handleSend = (message) => {
-    const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    setMessages((prev) => [...prev, { text: message, type: 'sent', time }]);
+  // Listen for incoming messages
+  useEffect(() => {
+    const receiveMessage = (data) => {
+      const isOwnMessage = data.id === socket.id;
 
-    // Simulate a received message
-    setTimeout(() => {
-      const replyTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      setMessages((prev) => [...prev, { text: `Reply: ${message}`, type: 'received', sender: 'Anjali', time: replyTime }]);
-    }, 1000);
+      if (!isOwnMessage) {
+        setMessages((prev) => [
+          ...prev,
+          {
+            text: data.message,
+            type: 'received',
+            sender: data.id.slice(0, 5),
+            time: data.time,
+          },
+        ]);
+      }
+    };
+
+    socket.on('receiveMessage', receiveMessage);
+    return () => socket.off('receiveMessage', receiveMessage);
+  }, []);
+
+  const handleSend = (messageText) => {
+    const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    socket.emit('sendMessage', messageText);
+
+    setMessages((prev) => [
+      ...prev,
+      { text: messageText, type: 'sent', sender: 'You', time },
+    ]);
   };
 
   const scrollToBottom = () => {
@@ -45,11 +65,11 @@ function ChatPage() {
   };
 
   return (
-    <div style={styles.chatApp}>
-      {/* Message list */}
+    <div className="max-w-md h-[80vh] mx-auto shadow-lg rounded-xl flex flex-col border border-gray-300 bg-white relative">
+      {/* Chat body */}
       <div
         ref={messageContainerRef}
-        style={styles.messagesContainer}
+        className="flex-1 p-4 overflow-y-auto bg-gray-100 space-y-3"
         onScroll={handleScroll}
       >
         {messages.map((msg, index) =>
@@ -62,60 +82,19 @@ function ChatPage() {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Scroll to bottom icon */}
+      {/* Scroll to bottom FAB */}
       {showScrollToBottom && (
         <ArrowCircleDownIcon
-          onClick={scrollToBottom}
-          style={styles.scrollButton}
+          className="text-blue-600 text-4xl cursor-pointer absolute bottom-[70px] right-4 bg-white rounded-full shadow-md"
           titleAccess="Scroll to latest message"
+          onClick={scrollToBottom}
         />
       )}
 
-      {/* Send message input */}
-      <div className=" h-[10vh]">
+      {/* Message input */}
+      <div className="h-[10vh] border-t border-gray-200 p-2 bg-white">
         <SendMessage onSend={handleSend} />
       </div>
     </div>
   );
 }
-
-const styles = {
-  chatApp: {
-    maxWidth: '500px',
-    height: '80vh',
-    border: '1px solid #ccc',
-    borderRadius: '12px',
-    display: 'flex',
-    flexDirection: 'column',
-    backgroundColor: '#f7f7f7',
-    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-    overflow: 'hidden',
-    fontFamily: 'Arial, sans-serif',
-    position: 'relative',
-    margin: 'auto',
-  },
-  messagesContainer: {
-    flex: 1,
-    padding: '15px',
-    overflowY: 'auto',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '10px',
-    backgroundColor: '#eef1f5',
-  },
-  scrollButton: {
-    position: 'absolute',
-    bottom: '12vh',
-    right: '15px',
-    fontSize: '40px',
-    color: '#007bff',
-    cursor: 'pointer',
-    backgroundColor: '#fff',
-    borderRadius: '50%',
-    padding: '4px',
-    boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
-    zIndex: 10,
-  },
-};
-
-export default ChatPage;
