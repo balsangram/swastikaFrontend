@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar, TextField } from '@mui/material';
+import { requestNotificationPermission } from '../firebase';
+
 
 function AnalogTimer() {
   const [seconds, setSeconds] = useState(0);
@@ -20,6 +22,9 @@ function AnalogTimer() {
         setSeconds(prev => prev + 1);
       }, 1000);
     }
+    useEffect(() => {
+      requestNotificationPermission();
+    }, []);
 
     if (seconds >= targetMinutes * 60 && isRunning) {
       setIsRunning(false);
@@ -46,7 +51,7 @@ function AnalogTimer() {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, [isRunning]);
-  
+
 
   const notifyUser = () => {
     if (Notification.permission === 'granted') {
