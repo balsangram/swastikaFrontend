@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar, TextField } from '@mui/material';
-import { requestNotificationPermission } from '../firebase';
+// import { requestNotificationPermission } from '../../../src/firebase'
 
 
 function AnalogTimer() {
@@ -22,10 +22,7 @@ function AnalogTimer() {
         setSeconds(prev => prev + 1);
       }, 1000);
     }
-    useEffect(() => {
-      requestNotificationPermission();
-    }, []);
-
+    
     if (seconds >= targetMinutes * 60 && isRunning) {
       setIsRunning(false);
       setShowSuccess(true);
@@ -44,6 +41,7 @@ function AnalogTimer() {
         alert("🚨 You left the tab while the timer was running. Timer paused.");
       }
     };
+    
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
