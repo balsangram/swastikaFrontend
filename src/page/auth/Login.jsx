@@ -8,56 +8,80 @@ import {
     Paper,
     Link as MuiLink,
     CircularProgress,
+    MenuItem
 } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
+import { login } from '../../api'; // ✅ Your login API function
 import SuccessPopup from '../../components/common/popups/SuccessPopup';
 import ErrorPopup from '../../components/common/popups/ErrorPopup';
 
+const loginMethods = [
+    { label: 'Email', value: 'email' },
+    { label: 'Phone Number', value: 'phoneNo' },
+    { label: 'Username', value: 'userName' },
+];
+
 const Login = () => {
+    const [method, setMethod] = useState('email');
     const [formData, setFormData] = useState({
         email: '',
+        phoneNo: '',
+        userName: '',
         password: '',
     });
+
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const [openModal, setOpenModal] = useState(false);
     const [errorModal, setErrorModal] = useState(false);
-
+    const [errorMessage, setErrorMessage] = useState('');
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = (e) => {
+    const handleMethodChange = (e) => {
+        setMethod(e.target.value);
+        // Reset form fields when method changes
+        setFormData({
+            email: '',
+            phoneNo: '',
+            userName: '',
+            password: '',
+        });
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
 
-        const { email, password } = formData;
+        const payload = {
+            password: formData.password,
+            token: 'dummy-device-token', // Optional
+        };
 
-        const dummyEmail = 'user@gmail.com';
-        const dummyPassword = '123456';
+        // Include only selected login method
+        if (method === 'email') payload.email = formData.email;
+        if (method === 'phoneNo') payload.phoneNo = formData.phoneNo;
+        if (method === 'userName') payload.userName = formData.userName;
 
         try {
-            if (email === dummyEmail && password === dummyPassword) {
-                localStorage.setItem('token', 'token from backend');
-                setOpenModal(true);
+            const response = await login(payload);
+            console.log('✅ Login success:', response);
 
-                setTimeout(() => {
-                    navigate('/home');
-                }, 2000);
-            } else {
-                setErrorModal(true);
-            }
+            // Optionally store token or user in localStorage
+            localStorage.setItem('user', JSON.stringify(response.user));
+
+            setOpenModal(true);
+            setTimeout(() => navigate('/home'), 2000);
         } catch (error) {
-            console.error('Login error:', error);
+            console.error('❌ Login failed:', error.message);
+            setErrorMessage(error.response?.data?.message || 'Invalid credentials');
             setErrorModal(true);
         } finally {
             setLoading(false);
         }
-
-        // setOpenModal(true);
-
     };
 
     return (
@@ -70,14 +94,54 @@ const Login = () => {
                 <form onSubmit={handleSubmit}>
                     <Box display="flex" flexDirection="column" gap={2}>
                         <TextField
-                            label="Email"
-                            name="email"
-                            type="email"
-                            value={formData.email}
-                            onChange={handleChange}
+                            select
+                            label="Login Method"
+                            value={method}
+                            onChange={handleMethodChange}
                             fullWidth
-                            required
-                        />
+                        >
+                            {loginMethods.map((option) => (
+                                <MenuItem key={option.value} value={option.value}>
+                                    {option.label}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+
+                        {method === 'email' && (
+                            <TextField
+                                label="Email"
+                                name="email"
+                                type="email"
+                                value={formData.email}
+                                onChange={handleChange}
+                                fullWidth
+                                required
+                            />
+                        )}
+
+                        {method === 'phoneNo' && (
+                            <TextField
+                                label="Phone Number"
+                                name="phoneNo"
+                                type="tel"
+                                value={formData.phoneNo}
+                                onChange={handleChange}
+                                inputProps={{ maxLength: 10 }}
+                                fullWidth
+                                required
+                            />
+                        )}
+
+                        {method === 'userName' && (
+                            <TextField
+                                label="Username"
+                                name="userName"
+                                value={formData.userName}
+                                onChange={handleChange}
+                                fullWidth
+                                required
+                            />
+                        )}
 
                         <TextField
                             label="Password"
@@ -113,20 +177,21 @@ const Login = () => {
                         Forgot Password?
                     </MuiLink>
                 </Box>
+
                 <SuccessPopup
                     open={openModal}
-                    // onClose={() => setOpenModal(false)}
                     title="Login Successful"
                     showIcon
                 >
-                    You have Logged In successfully!
+                    You have logged in successfully!
                 </SuccessPopup>
+
                 <ErrorPopup
                     open={errorModal}
                     onClose={() => setErrorModal(false)}
                     title="Login Failed"
                 >
-                    Invalid email or password.
+                    {errorMessage}
                 </ErrorPopup>
             </Paper>
         </Container>

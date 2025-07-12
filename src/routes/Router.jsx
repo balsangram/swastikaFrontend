@@ -19,6 +19,10 @@ const ChatPage = Loadable(lazy(() => import('../page/groupChart/ChatPage')));
 const Login = Loadable(lazy(() => import('../page/auth/Login')));
 const Register = Loadable(lazy(() => import('../page/auth/Register')));
 const DefaultLayout = Loadable(lazy(() => import('../components/Layouts/DefaultLayout')))
+const TaskManager = Loadable(lazy(() => import('../page/todo/TaskManager')))
+const PersonalTasks=Loadable(lazy(() => import('../page/todo/PersonalTasks')))
+const ProfessionalTasks=Loadable(lazy(() => import('../page/todo/ProfessionalTasks')))
+
 
 const Router = [
   {

@@ -22,7 +22,7 @@ function AnalogTimer() {
         setSeconds(prev => prev + 1);
       }, 1000);
     }
-    
+
     if (seconds >= targetMinutes * 60 && isRunning) {
       setIsRunning(false);
       setShowSuccess(true);
@@ -33,22 +33,23 @@ function AnalogTimer() {
 
     return () => clearInterval(interval);
   }, [isRunning, seconds]);
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (document.hidden && isRunning) {
-        // Pause timer and show alert when user leaves the tab
-        setIsRunning(false);
-        alert("🚨 You left the tab while the timer was running. Timer paused.");
-      }
-    };
-    
 
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+  // useEffect(() => {
+  //   const handleVisibilityChange = () => {
+  //     if (document.hidden && isRunning) {
+  //       // Pause timer and show alert when user leaves the tab
+  //       setIsRunning(false);
+  //       alert("🚨 You left the tab while the timer was running. Timer paused.");
+  //     }
+  //   };
 
-    return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
-  }, [isRunning]);
+
+  //   document.addEventListener('visibilitychange', handleVisibilityChange);
+
+  //   return () => {
+  //     document.removeEventListener('visibilitychange', handleVisibilityChange);
+  //   };
+  // }, [isRunning]);
 
 
   const notifyUser = () => {
