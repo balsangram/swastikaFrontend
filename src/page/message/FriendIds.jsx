@@ -1,46 +1,41 @@
 import React from 'react';
-import { Box } from '@mui/material';
-import Friend from '../../components/message/Friend';
-import { useNavigate } from 'react-router-dom';
+import { Avatar, Box, Typography, Stack } from '@mui/material';
 
-const dummyFriends = [
-  {
-    id: 1,
-    name: 'Sangram',
-    profilePic: 'https://via.placeholder.com/40',
-    message: 'Hey, how are you?',
-    time: '10:30 AM',
-  },
-  {
-    id: 2,
-    name: 'John Doe',
-    profilePic: 'https://via.placeholder.com/40',
-    message: 'Let’s meet tomorrow!',
-    time: '9:15 AM',
-  },
-  {
-    id: 3,
-    name: 'Jane Smith',
-    profilePic: 'https://via.placeholder.com/40',
-    message: 'Sent the documents.',
-    time: 'Yesterday',
-  },
-];
-
-function FriendIds() {
-  const navigate = useNavigate(); // ✅ fixed
-
+function Friend({ profilePic, name, message, time, onClick }) {
   return (
-    <Box sx={{ maxWidth: 500, margin: '0 auto', padding: 2 }}>
-      {dummyFriends.map(friend => (
-        <Friend
-          key={friend.id}
-          {...friend}
-          onClick={() => navigate('/ChatPage')} // ✅ fixed
-        />
-      ))}
+    <Box
+      onClick={onClick}
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        padding: 1.5,
+        marginBottom: 1,
+        borderRadius: 2,
+        backgroundColor: '#f9f9f9',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+        cursor: 'pointer',
+        transition: '0.3s',
+        '&:hover': {
+          backgroundColor: '#eaeaea',
+        },
+      }}
+    >
+      <Avatar src={profilePic} alt={name} sx={{ width: 50, height: 50, marginRight: 2 }} />
+      <Box flex="1">
+        <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Typography variant="subtitle1" fontWeight="bold">
+            {name}
+          </Typography>
+          <Typography variant="caption" color="text.secondary">
+            {time}
+          </Typography>
+        </Stack>
+        <Typography variant="body2" color="text.secondary" noWrap>
+          {message}
+        </Typography>
+      </Box>
     </Box>
   );
 }
 
-export default FriendIds;
+export default Friend;
