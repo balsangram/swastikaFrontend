@@ -5,6 +5,7 @@ import BlankLayout from '../components/Layouts/BlankLayout';
 import Home from '../page/Home';
 import Loadable from '../components/Layouts/Loadable';
 import EditNote from '../page/note/EditNote';
+import TimeTable from '../page/timeTable/TimeTable';
 
 // Lazy imports
 const Timer = Loadable(lazy(() => import('../page/timer/Timer')));
@@ -36,6 +37,7 @@ const Router = [
             { path: 'friendIds', element: <FriendIds /> },
             { path: 'note', element: <Note /> },
             { path: 'editNote', element: <EditNote /> },
+            { path: 'timeTable', element: <TimeTable /> },
         ],
     },
     {
