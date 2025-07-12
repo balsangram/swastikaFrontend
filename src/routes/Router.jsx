@@ -4,6 +4,7 @@ import ProtectedRoute from '../components/auth/ProtectedRoutes';
 import BlankLayout from '../components/Layouts/BlankLayout';
 import Home from '../page/Home';
 import Loadable from '../components/Layouts/Loadable';
+import EditNote from '../page/note/EditNote';
 
 // Lazy imports
 const Timer = Loadable(lazy(() => import('../page/timer/Timer')));
@@ -31,6 +32,8 @@ const Router = [
             { path: 'graphHome', element: <GraphHome /> },
             { path: 'chatPage', element: <ChatPage /> },
             { path: 'friendIds', element: <FriendIds /> },
+            { path: 'note', element: <Note /> },
+            { path: 'editNote', element: <EditNote /> },
         ],
     },
     {

@@ -1,39 +1,80 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import {
+  Box,
+  Button,
+  Typography,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Paper,
+} from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import PushPinIcon from '@mui/icons-material/PushPin';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function Note() {
-  const [note, setNote] = useState('');
+  const navigate = useNavigate();
+  const [notes, setNotes] = useState([]);
 
-  // Load saved note from localStorage on mount
-  useEffect(() => {
-    const savedNote = localStorage.getItem('myNote');
-    if (savedNote) {
-      setNote(savedNote);
+  const fetchNotes = async () => {
+    try {
+      const res = await axios.get('http://localhost:8000/swastic/note/');
+      setNotes(res.data.notes);
+    } catch (error) {
+      console.error('Failed to fetch notes:', error.message);
     }
+  };
+
+  useEffect(() => {
+    fetchNotes();
   }, []);
 
-  // Save to localStorage when note changes
-  const handleSave = () => {
-    localStorage.setItem('myNote', note);
-    alert('Note saved!');
+  const handleAddNote = () => {
+    navigate('/editNote');
+  };
+
+  const handleEditNote = (note) => {
+    navigate('/editNote', { state: note });
   };
 
   return (
-    <div className="max-w-xl mx-auto mt-10 p-4 border rounded shadow">
-      <h2 className="text-2xl font-bold mb-4">My Note</h2>
-      <textarea
-        value={note}
-        onChange={(e) => setNote(e.target.value)}
-        rows={10}
-        className="w-full p-2 border rounded mb-4 resize-none"
-        placeholder="Write your note here..."
-      />
-      <button
-        onClick={handleSave}
-        className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
-      >
-        Save
-      </button>
-    </div>
+    <Box sx={{ maxWidth: 800, margin: '40px auto', padding: 3 }}>
+      <Paper elevation={3} sx={{ padding: 4 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+          <Typography variant="h5">Your Notes</Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<AddIcon />}
+            onClick={handleAddNote}
+          >
+            Add Note
+          </Button>
+        </Box>
+
+        {notes.length === 0 ? (
+          <Typography variant="body1" color="text.secondary">
+            No notes found.
+          </Typography>
+        ) : (
+          <List>
+            {notes.map((note) => (
+              <ListItem key={note._id} disablePadding>
+                <ListItemButton onClick={() => handleEditNote(note)}>
+                  <ListItemIcon>
+                    <PushPinIcon color="action" />
+                  </ListItemIcon>
+                  <ListItemText primary={note.headline} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+        )}
+      </Paper>
+    </Box>
   );
 }
 
