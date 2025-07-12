@@ -21,38 +21,36 @@ const Register = Loadable(lazy(() => import('../page/auth/Register')));
 const DefaultLayout = Loadable(lazy(() => import('../components/Layouts/DefaultLayout')))
 
 const Router = [
-    {
-        path: '/',
-        element: <DefaultLayout />,
-        children: [
-            { path: 'home', element: <Home /> },
-            { path: 'timer', element: <Timer /> },
-            { path: 'todoList', element: <TodoList /> },
-            { path: 'note', element: <Note /> },
-
-            { path: 'profile', element: <Profile /> },
-            { path: 'notification', element: <Notification /> },
-            { path: 'graphHome', element: <GraphHome /> },
-            { path: 'chatPage', element: <ChatPage /> },
-            { path: 'friendIds', element: <FriendIds /> },
-            { path: 'note', element: <Note /> },
-            { path: 'editNote', element: <EditNote /> },
-            { path: 'timeTable', element: <TimeTable /> },
-        ],
-    },
-    {
-        path: '',
-        element: <BlankLayout />,
-        children: [
-            { path: 'login', element: <Login /> },
-            { path: 'register', element: <Register /> },
-            { index: true, element: <Navigate to="login" replace /> },
-        ],
-    },
-    {
-        path: '*',
-        element: <Navigate to="login" replace />,
-    },
+  {
+    path: '/',
+    element: <DefaultLayout />,
+    children: [
+      { index: true, element: <Home /> }, // Default route under "/"
+      { path: 'timer', element: <Timer /> },
+      { path: 'todoList', element: <TodoList /> },
+      { path: 'note', element: <Note /> },
+      { path: 'profile', element: <Profile /> },
+      { path: 'notification', element: <Notification /> },
+      { path: 'graphHome', element: <GraphHome /> },
+      { path: 'chatPage', element: <ChatPage /> },
+      { path: 'friendIds', element: <FriendIds /> },
+      { path: 'editNote', element: <EditNote /> },
+      { path: 'timeTable', element: <TimeTable /> },
+    ],
+  },
+  {
+    path: '/',
+    element: <BlankLayout />,
+    children: [
+      { path: 'login', element: <Login /> },
+      { path: 'register', element: <Register /> },
+    ],
+  },
+  {
+    path: '*',
+    element: <Navigate to="/" replace />,
+  },
 ];
+
 
 export default Router;
