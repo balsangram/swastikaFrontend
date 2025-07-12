@@ -27,6 +27,8 @@ const Router = [
             { path: 'home', element: <Home /> },
             { path: 'timer', element: <Timer /> },
             { path: 'todoList', element: <TodoList /> },
+            { path: 'note', element: <Note /> },
+
             { path: 'profile', element: <Profile /> },
             { path: 'notification', element: <Notification /> },
             { path: 'graphHome', element: <GraphHome /> },
